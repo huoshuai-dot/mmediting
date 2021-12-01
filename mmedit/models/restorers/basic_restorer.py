@@ -107,6 +107,9 @@ class BasicRestorer(BaseModel):
             dict: Evaluation results.
         """
         crop_border = self.test_cfg.crop_border
+        convert_to = None
+        if 'convert_to' in self.test_cfg:
+            convert_to = self.test_cfg.convert_to
 
         output = tensor2img(output)
         gt = tensor2img(gt)
@@ -114,7 +117,8 @@ class BasicRestorer(BaseModel):
         eval_result = dict()
         for metric in self.test_cfg.metrics:
             eval_result[metric] = self.allowed_metrics[metric](output, gt,
-                                                               crop_border)
+                                                               crop_border,
+                                                              convert_to=convert_to)
         return eval_result
 
     def forward_test(self,
